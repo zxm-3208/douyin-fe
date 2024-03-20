@@ -71,6 +71,8 @@
 </template>
 
 <script>
+    import axios from 'axios';
+
     export default {
         name: 'Sign',
         data() {
@@ -84,7 +86,15 @@
         },
         methods: {
             getCode() {
-                this.$router.push("/VerificationCode?"+this.phone) //去密码登陆页面
+                axios.post('http://localhost:8081/user/code?phone='+this.phone,{
+                })
+                .then(
+                    this.$router.push("/code")
+                )
+                .catch(error => {
+                    console.error(error);
+                });
+                // this.$router.push("/user/code?"+this.phone) //去密码登陆页面
             },
             show() {
                 this.showMask = true;
