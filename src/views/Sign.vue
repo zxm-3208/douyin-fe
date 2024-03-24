@@ -86,10 +86,9 @@
         },
         methods: {
             getCode() {
-                axios.post('http://localhost:8081/user/code?phone='+this.phone,{
-                })
+                axios.post('http://localhost:8081/user/code?phone='+this.phone)
                 .then(
-                    this.$router.push("/code")
+                    this.$router.push("/code?phone="+this.phone)
                 )
                 .catch(error => {
                     console.error(error);

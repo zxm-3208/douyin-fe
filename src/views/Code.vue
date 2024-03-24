@@ -14,7 +14,7 @@
 		<div class="sign-content">
 			<div class="des">
 				<h2>请输入验证码</h2>
-				<p>验证码已通过短信发送至+86 13319921407</p>
+				<p>验证码已通过短信发送至+86 {{this.$route.query.phone}}</p>
 			</div>
 			<div class="sign-box">
 				<div class="inp">
@@ -31,6 +31,8 @@
 	</div>
 </template>
 <script>
+	import axios from 'axios';
+
 	export default{
 		name:"Tbsign",
 		data(){
@@ -44,25 +46,43 @@
 		},
 		created(){
 			this.timer();
-			this.getCode();
 		},
 		methods:{
-			getCode(){
-				this.codes='123456';
-			},
 			// 检测验证码是否一致
-			changeCode(e){
-				this.code=e.target.value;
-				if(this.code==this.codes){
+			changeCode(){
+				if(this.code.length==6){
 					this.disabled=false,
 					this.btnBg=true;
-					this.loading=true;  //验证码正确才显示loading
+					// this.loading=true;  //验证码正确才显示loading
 				}else{
-					console.log('验证码错误')
+					this.disabled=true,
+					this.btnBg=false;
+					// this.loading=false;
 				}	
 			},
 			clickFun(){
-				this.$router.push({ path:"/me"})
+				// 登录请求处理
+				axios.post('http://localhost:8081/user/login',{
+					"phone": this.$route.query.phone,
+					"code": this.code
+				})
+                .then((res)=>{
+					if(res.status=="200"){
+						// 登录成功，将Token存储在内存中
+						localStorage.setItem('token',"Bearer "+res.data.data.authorization)
+						
+						
+						// 跳转到首页或其他需要登录的页面
+						this.$router.push({ path:"/me"})
+					}
+					else{
+						this.$toast('验证码错误！')
+
+					}
+				})
+                .catch(error => {
+                    console.error(error);
+                });
 			},
 			// 60秒 倒计时
 			timer(){
