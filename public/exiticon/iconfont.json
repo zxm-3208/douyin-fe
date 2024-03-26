@@ -1,0 +1,16 @@
+{
+  "id": "4482309",
+  "name": "1",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "10168310",
+      "name": "logout",
+      "font_class": "logout",
+      "unicode": "e634",
+      "unicode_decimal": 58932
+    }
+  ]
+}

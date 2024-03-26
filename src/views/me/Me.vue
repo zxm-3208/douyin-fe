@@ -2,7 +2,9 @@
 	<div class="me">
 		<div class="me-top" :style="bgPic">
 			<div class="menu-box">
-				<div class="menu-icon"></div>
+				<button class="exit_icon" @click="loginout">
+					<i class="iconfont icon-logout"></i>
+				</button>
 			</div>
 		</div>
 		<div class="me-warp">
@@ -65,6 +67,8 @@
 	</div>
 </template>
 <script>
+	import axios from 'axios';
+
 	export default{
 		name:"Me",
 		data(){
@@ -83,6 +87,21 @@
 			},
 			toRouter(){
 				this.$router.push('/edit')
+			},
+			loginout(){
+				axios.get('http://localhost:8081/user/logout', {
+					headers: {
+						'Authorization': 'Bearer ' + localStorage.getItem('authorization')
+					}
+				})
+                .then(
+					console.info(localStorage.getItem('authorization')),
+                    localStorage.removeItem('authorization'),
+					this.$router.push('/sign')
+                )
+                .catch(error => {
+                    console.error(error);
+                });
 			}
 		}
 	}
@@ -111,7 +130,7 @@
 		background-clip:content-box;
 		width: 18px;
 		height: 2px;
-		padding: 5px 0;
+		padding: 2px 0;
 	}
 	.me-warp{
 		position: absolute;
@@ -201,4 +220,13 @@
 	.tab-img img{
 		width: 33.3%;
 	}
+	.exit_icon{
+		height: 40px;
+		padding: 0 24px;
+		background-color:#393842;
+		border: none;
+		outline: none;
+		color: #fff;
+	}
+	
 </style>

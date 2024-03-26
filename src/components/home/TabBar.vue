@@ -24,7 +24,7 @@
         </div>
 
         <div class="item" @click="changeTab(4)">
-            <router-link to="/sign" tag="span" :class="tabIndex==4?'active':''">我</router-link>
+            <router-link to="/me" tag="span" :class="tabIndex==4?'active':''">我</router-link>
 
         </div>
 

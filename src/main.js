@@ -4,6 +4,7 @@ import router from './router'
 
 // 引入阿里图标库
 import '../public/iconfont/iconfont.css'
+import '../public/exiticon/iconfont.css'
 import '../public/iconfont/iconfont.js'
 Vue.config.productionTip = false
 
@@ -15,7 +16,6 @@ Vue.use(VueAwesomeSwiper);
 import 'vue-video-player/src/custom-theme.css'
 import 'video.js/dist/video-js.css'
 
-
 // 自定义弹窗
 import Toast from './components/toast/toast.js'
 // 将组件注册到vue的原型链,这样就可以在所有的VUE的实例里面使用this.$toast()
@@ -24,9 +24,10 @@ Vue.prototype.$toast=Toast   //注册全局组件
 import Axios from 'axios'
 Vue.prototype.$http = Axios
 Axios.defaults.baseURL = 'http://localhost:8080/'
+
 // http request 拦截器
 Axios.interceptors.request.use(function (config) {
-  const token=localStorage.getItem('token')
+  const token=localStorage.getItem('authorization')
   token?config.headers.Authorization=token:null;
   return config;
 }, function (error) {
@@ -35,9 +36,9 @@ Axios.interceptors.request.use(function (config) {
 })
 
 Axios.interceptors.response.use(res=>{
-  if(res.data.res_code=== 401){
-      router.replace('/login');
-      localStorage.removeItem('token')
+  if(res.data.code=== 401){
+      router.replace('/sign');
+      localStorage.removeItem('authorization')
   }
   return res
 })

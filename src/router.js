@@ -1,9 +1,11 @@
 import Vue from 'vue'
+import VueRouter from "vue-router";
 import Router from 'vue-router'
 Vue.use(Router)
 // 引入组件
 import Home from './views/Home.vue'
 
+Vue.use(VueRouter);
 const router=new Router({
 	routes:[
 		// 默认首页显示
@@ -76,6 +78,20 @@ const router=new Router({
 		},
 		
 	]
-})
+});
+
+router.beforeEach((to, from, next) => {
+	if (to.path === '/sign') return next();
+	if (to.path === '/code' && from.path == '/sign'){
+		return next();
+	}
+	//获取token
+	const tokenStr = localStorage.getItem('authorization')
+	console.log(tokenStr)
+	if (!tokenStr) return next('/sign')
+	next()
+  })
+
+
 
 export default router
