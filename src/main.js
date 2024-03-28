@@ -37,9 +37,11 @@ Axios.interceptors.request.use(function (config) {
 
 Axios.interceptors.response.use(res=>{
   if(res.data.code=== 401){
-      router.replace('/sign');
-      localStorage.removeItem('authorization')
-  }
+      if(window.location.href!='http://localhost:8080/#/tbsign'){
+        router.replace('/sign');
+        localStorage.removeItem('authorization')
+      }
+    }
   return res
 })
 

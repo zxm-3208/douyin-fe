@@ -81,13 +81,13 @@ const router=new Router({
 });
 
 router.beforeEach((to, from, next) => {
-	if (to.path === '/sign') return next();
+	if (to.path === '/sign' ||to.path === '/index' || to.path==='/tbsign') 
+		return next();
 	if (to.path === '/code' && from.path == '/sign'){
 		return next();
 	}
 	//获取token
 	const tokenStr = localStorage.getItem('authorization')
-	console.log(tokenStr)
 	if (!tokenStr) return next('/sign')
 	next()
   })

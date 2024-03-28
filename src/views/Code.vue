@@ -67,10 +67,9 @@
 					"code": this.code
 				})
                 .then((res)=>{
-					if(res.status=="200"){
+					if(res.data.code=="200"){
 						// 登录成功，将Token存储在内存中
 						localStorage.setItem('authorization',"Bearer "+res.data.data.authorization)
-						console.log('code:',res.data.data.authorization)
 						
 						// 跳转到首页或其他需要登录的页面
 						this.$router.push({ path:"/me"})

@@ -12,24 +12,32 @@
 		</div>
 		<div class="sign-content">
 			<div class="des">
-				<h2>手机号登录</h2>
+				<h2>用户名登录</h2>
 			</div>
 			<div class="sign-box">
-				<div class="sele">
+				<!-- <div class="sele">
 					<select v-model="telErea" class="sele-controll">
 						<option value="">+86</option>
 					</select>
-				</div>
+				</div> -->
 
 				<div class="inp">
-					<input @keyup="loginAction" v-model="phone" type="text" class="inp-controll" placeholder="请输入手机号" />
+					<input @blur="loginUserNameAction" v-model="username" type="text" class="inp-controll" placeholder="请输入用户名" />
 				</div>
-				
 			</div>
 			
 			<div class="sign-box">
 				<div class="inp">
-					<input @keyup="loginAction" v-model="password" type="password" class="inp-controll" placeholder="请输入密码" />
+					<input @blur="loginPasswordAction" v-model="password" type="password" class="inp-controll" placeholder="请输入密码" />
+				</div>
+			</div>
+
+			<div class="sign-box">
+				<div class="inp">
+					<input @blur="loginPasswordAction" v-model="code" type="text" class="inp-controll" placeholder="请输入验证码" />
+				</div>
+					<div class="captcha-wrapper">
+					<img :src="codeUrl" @click="getCodeImg" />
 				</div>
 			</div>
 			
@@ -46,44 +54,97 @@
 	</div>
 </template>
 <script>
+	import axios from 'axios';
+
 	export default{
 		name:"Tbsign",
 		data(){
 			return{
+				codeUrl: '',
 				telErea:'',
 				password:'',
 				disabled:true,
 				btnBg:false,
-				phone:''
+				code:'',
+				username:'',
+				uuid:''
 			}
 		},
+		created(){
+			this.getCodeImg()
+		},
 		methods:{
-			loginAction(){
-				var reg=/^1[345789]{1}\d{9}$/;
-				if(this.phone==""){	
+			loginUserNameAction(){
+				var reg=/^\w{6,20}$/;
+				if(this.username==""){	
 					//调用自定义弹出组件
-					this.$toast('手机号不能为空')
-				}else if(!reg.test(this.phone)){
+					this.$toast('用户名不能为空')
+				}else if(!reg.test(this.username)){
 					this.$toast({
-						message:"请填写正确的手机号码",
+						message:"用户名不符合规范",
 						type:"error",
 						duration:3000,
 					})
-				}else if(this.password==""){
+				}
+			},
+			loginPasswordAction(){
+				var reg=/^\w{6,20}$/;
+				if(this.password==""){
 					this.$toast({
 						message:"密码不能为空",
 						type:"error",
 						duration:3000,
 					})
-					return
-				}else{
+				}else if(reg.test(this.username)){
 					this.disabled=false;
 					this.btnBg=true;	
 				}
+			},
+			getCodeImg () {
+				axios.get('http://localhost:8081/user/captchaImage',{
+					params: {
+						uuid: this.uuid
+					}
+				})
+                .then((res)=>{
+					console.info(res);
+					this.codeUrl = res.data.data.img;
+					this.uuid = res.data.data.uuid;
+				})
+                .catch(error => {
+					console.info("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+                    console.error(error);
+                });
+			},
+			loginAction(){
 				// 请求登录接口
-				if(this.password==123456){
-					this.$router.push("/me")
-				}
+				axios.post('http://localhost:8081/user/logoinbyusername',{
+					"userName": this.username,
+					"password": this.password,
+					"code": this.code,
+					"uuid": this.uuid
+				})
+                .then((res)=>{
+					console.info(this.username)
+					console.info(this.password)
+					console.info(this.code)
+					console.info(this.uuid)
+					console.info(res)
+					if(res.data.code=="200"){
+						// 登录成功，将Token存储在内存中
+						localStorage.setItem('authorization',"Bearer "+res.data.data.authorization)
+						
+						// 跳转到首页或其他需要登录的页面
+						this.$router.push({ path:"/me"})
+					}
+					else{
+						this.$toast('验证码错误！')
+
+					}
+				})
+                .catch(error => {
+                    console.error(error);
+                });
 			}
 		}
 	}
@@ -139,6 +200,22 @@
 		margin-left:10px;
 		border: none;
 		width: 90%;
+		outline: none;
+	}
+	.captcha-controll{
+		background-color: #f9f9f9;
+		height: 36px;
+		margin-left:10px;
+		border: none;
+		width: 80%;
+		outline: none;
+	}
+	.captcha-wrapper{
+		background-color: #ffffff;
+		height: 36px;
+		margin-left:40px;
+		border: none;
+		width: 30%;
 		outline: none;
 	}
 	input{

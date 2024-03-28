@@ -1,24 +1,5 @@
-# douying
+# TODO 列表
 
-## Project setup
-```
-npm install
-```
+1. 前端验证码获取
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+# 碰到的问题，在多重验证方式下，如何跳转到当前登录方式

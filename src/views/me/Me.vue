@@ -5,6 +5,10 @@
 				<button class="exit_icon" @click="loginout">
 					<i class="iconfont icon-logout"></i>
 				</button>
+				
+				<button class="hello" @click="hello">
+					hello
+				</button>
 			</div>
 		</div>
 		<div class="me-warp">
@@ -89,16 +93,31 @@
 				this.$router.push('/edit')
 			},
 			loginout(){
-				axios.get('http://localhost:8081/user/logout', {
+				axios.get('http://localhost:8081/logout', {
 					headers: {
 						'Authorization': 'Bearer ' + localStorage.getItem('authorization')
 					}
 				})
                 .then(
-					console.info(localStorage.getItem('authorization')),
                     localStorage.removeItem('authorization'),
 					this.$router.push('/sign')
                 )
+                .catch(error => {
+                    console.error(error);
+                });
+			},
+			hello(){
+				axios.get('http://localhost:8081/user/hello', {
+					headers: {
+						'Authorization': 'Bearer ' + localStorage.getItem('authorization')
+					}
+				})
+                .then((res)=>{
+					if(res.data.code=="401"){
+						this.$router.push.push('/sign');
+						localStorage.removeItem('authorization')
+					}
+				})
                 .catch(error => {
                     console.error(error);
                 });
@@ -221,6 +240,14 @@
 		width: 33.3%;
 	}
 	.exit_icon{
+		height: 40px;
+		padding: 0 24px;
+		background-color:#393842;
+		border: none;
+		outline: none;
+		color: #fff;
+	}
+	.hello{
 		height: 40px;
 		padding: 0 24px;
 		background-color:#393842;
